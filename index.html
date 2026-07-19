@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Deutsches Wörterbuch</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background-color: #f5f5f7;
+            color: #1d1d1f;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+        .container {
+            width: 100%;
+            max-width: 500px;
+            background: #ffffff;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+        }
+        .search-box {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        input[type="text"] {
+            flex: 1;
+            padding: 12px 16px;
+            font-size: 18px;
+            border: 2px solid #e5e5ea;
+            border-radius: 8px;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+        input[type="text"]:focus {
+            border-color: #0071e3;
+        }
+        .main-btn {
+            padding: 12px 24px;
+            font-size: 16px;
+            background-color: #0071e3;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 500;
+        }
+        .main-btn:hover {
+            background-color: #0077ed;
+        }
+        .result-card {
+            background: #f5f5f7;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border: 1px solid #e5e5ea;
+        }
+        .result-text {
+            font-size: 20px;
+            font-weight: 600;
+            letter-spacing: -0.02em;
+        }
+        .type-badge {
+            font-size: 12px;
+            color: #86868b;
+            display: block;
+            margin-bottom: 4px;
+        }
+        .copy-btn {
+            background: #34c759;
+            color: white;
+            padding: 8px 12px;
+            font-size: 14px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            margin-left: 15px;
+        }
+        .copy-btn:hover {
+            background: #30b852;
+        }
+        .status {
+            font-size: 14px;
+            color: #86868b;
+            text-align: center;
+            line-height: 1.5;
+        }
+        .suggestions-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            justify-content: center;
+            margin-top: 10px;
+        }
+        .suggestion-btn {
+            background-color: #e5e5ea;
+            color: #1d1d1f;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 16px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        .suggestion-btn:hover {
+            background-color: #d1d1d6;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="search-box">
+        <input type="text" id="wordInput" placeholder="Например: melden или meldung" autofocus>
+        <button class="main-btn" onclick="searchWord()">Найти</button>
+    </div>
+
+    <div id="status" class="status"></div>
+    <div id="results"></div>
+</div>
+
+<script>
+    document.getElementById('wordInput').addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') searchWord();
+    });
+
+    // Добавлен параметр overrideWord для поиска по предложенному слову
+    async function searchWord(overrideWord = null) {
+        const inputEl = document.getElementById('wordInput');
+        const word = overrideWord || inputEl.value.trim();
+        
+        if (overrideWord) {
+            inputEl.value = overrideWord; // Обновляем строку ввода, если кликнули по подсказке
+        }
+        
+        const statusDiv = document.getElementById('status');
+        const resultsDiv = document.getElementById('results');
+        
+        if (!word) return;
+        
+        statusDiv.innerText = "Ищу...";
+        resultsDiv.innerHTML = "";
+
+        const lowercaseWord = word.toLowerCase(); 
+        const capitalizedWord = word.charAt(0).toUpperCase() + word.slice(1).toLowerCase(); 
+
+        let foundSomething = false;
+
+        try {
+            const [nounRes, verbRes] = await Promise.all([
+                fetch(`https://de.wiktionary.org/w/api.php?action=query&titles=${encodeURIComponent(capitalizedWord)}&prop=revisions&rvprop=content&format=json&origin=*`),
+                fetch(`https://de.wiktionary.org/w/api.php?action=query&titles=${encodeURIComponent(lowercaseWord)}&prop=revisions&rvprop=content&format=json&origin=*`)
+            ]);
+
+            const nounData = await nounRes.json();
+            const verbData = await verbRes.json();
+
+            const cleanWikiText = (str) => {
+                if (!str) return '';
+                return str.replace(/<!--[\s\S]*?-->/g, '') 
+                          .replace(/\[\[([^\]]+)\]\]/g, (m, p1) => p1.includes('|') ? p1.split('|').pop() : p1)
+                          .replace(/<[^>]+>/g, '') 
+                          .trim();
+            };
+
+            // 1. СУЩЕСТВИТЕЛЬНОЕ
+            const nounPages = nounData.query.pages;
+            const nounPageId = Object.keys(nounPages)[0];
+            if (nounPageId !== "-1") {
+                const content = nounPages[nounPageId].revisions[0]['*'];
+                if (content.includes('{{Deutsch Substantiv Übersicht')) {
+                    const genusMatch = content.match(/\|Genus=([mfn])/);
+                    const pluralMatch = content.match(/\|Nominativ Plural\s*1?\s*=\s*([^\n|}]+)/);
+
+                    if (genusMatch) {
+                        const g = genusMatch[1];
+                        const article = g === 'm' ? 'der' : g === 'f' ? 'die' : 'das';
+                        let plural = pluralMatch ? cleanWikiText(pluralMatch[1]) : '';
+                        
+                        let output = `${article} ${capitalizedWord}`;
+                        if (plural && plural !== '-' && plural !== '—') {
+                            output += `, die ${plural}`;
+                        }
+                        
+                        renderResult(output, "Существительное");
+                        foundSomething = true;
+                    }
+                }
+            }
+
+            // 2. ГЛАГОЛ
+            const verbPages = verbData.query.pages;
+            const verbPageId = Object.keys(verbPages)[0];
+            if (verbPageId !== "-1") {
+                const content = verbPages[verbPageId].revisions[0]['*'];
+                if (content.includes('{{Deutsch Verb Übersicht')) {
+                    const praetMatch = content.match(/\|Präteritum_ich\s*=\s*([^\n|}]+)/) || content.match(/\|Präteritum_er, sie, es\s*=\s*([^\n|}]+)/);
+                    const partMatch = content.match(/\|Partizip II\s*=\s*([^\n|}]+)/);
+                    const hilfsverbMatch = content.match(/\|Hilfsverb\s*=\s*([^\n|}]+)/);
+                    
+                    if (praetMatch && partMatch && hilfsverbMatch) {
+                        let praet = cleanWikiText(praetMatch[1]);
+                        let part = cleanWikiText(partMatch[1]);
+                        let hilfs = cleanWikiText(hilfsverbMatch[1]);
+                        
+                        let hilfsverbStr = "hat";
+                        if (hilfs.includes('sein')) hilfsverbStr = "ist";
+                        if (hilfs.includes('haben') && hilfs.includes('sein')) hilfsverbStr = "hat/ist";
+
+                        const output = `${lowercaseWord}, ${praet}, ${hilfsverbStr} ${part}`;
+                        renderResult(output, "Глагол");
+                        foundSomething = true;
+                    }
+                }
+            }
+
+        } catch (e) {
+            console.error("Ошибка API:", e);
+            statusDiv.innerText = "Ошибка соединения.";
+            return;
+        }
+
+        // 3. ПОИСК ПОХОЖИХ СЛОВ (если точное совпадение не найдено)
+        if (foundSomething) {
+            statusDiv.innerText = "";
+        } else {
+            statusDiv.innerText = "Точное совпадение не найдено. Ищем варианты...";
+            
+            try {
+                // Запрос к OpenSearch API Викисловаря (ищет слова, начинающиеся на введенные буквы или похожие)
+                const searchRes = await fetch(`https://de.wiktionary.org/w/api.php?action=opensearch&search=${encodeURIComponent(word)}&limit=6&namespace=0&format=json&origin=*`);
+                const searchData = await searchRes.json();
+                
+                // В ответе OpenSearch массив [0] это сам запрос, а [1] - массив предложенных слов
+                const suggestions = searchData[1];
+                
+                if (suggestions && suggestions.length > 0) {
+                    statusDiv.innerHTML = "Слово не найдено. Возможно, вы искали:<br>";
+                    
+                    const suggContainer = document.createElement('div');
+                    suggContainer.className = 'suggestions-container';
+                    
+                    suggestions.forEach(sugg => {
+                        // Отфильтровываем служебные страницы, если они вдруг попали
+                        if (!sugg.includes(':')) {
+                            const btn = document.createElement('button');
+                            btn.className = 'suggestion-btn';
+                            btn.innerText = sugg;
+                            // При клике запускаем поиск по этому слову
+                            btn.onclick = () => searchWord(sugg);
+                            suggContainer.appendChild(btn);
+                        }
+                    });
+                    
+                    statusDiv.appendChild(suggContainer);
+                } else {
+                    statusDiv.innerText = "Слово не найдено, и похожих вариантов нет. Проверьте орфографию.";
+                }
+            } catch (e) {
+                statusDiv.innerText = "Слово не найдено.";
+            }
+        }
+    }
+
+    function renderResult(text, typeName) {
+        const resultsDiv = document.getElementById('results');
+        
+        const card = document.createElement('div');
+        card.className = 'result-card';
+        
+        const contentDiv = document.createElement('div');
+        
+        const badge = document.createElement('span');
+        badge.className = 'type-badge';
+        badge.innerText = typeName;
+        
+        const textSpan = document.createElement('span');
+        textSpan.className = 'result-text';
+        textSpan.innerText = text;
+        
+        contentDiv.appendChild(badge);
+        contentDiv.appendChild(textSpan);
+        
+        const btn = document.createElement('button');
+        btn.className = 'copy-btn';
+        btn.innerText = "Копировать";
+        btn.onclick = () => {
+            navigator.clipboard.writeText(text);
+            btn.innerText = "Готово!";
+            btn.style.backgroundColor = "#8e8e93";
+            setTimeout(() => {
+                btn.innerText = "Копировать";
+                btn.style.backgroundColor = "#34c759";
+            }, 1000);
+        };
+        
+        card.appendChild(contentDiv);
+        card.appendChild(btn);
+        resultsDiv.appendChild(card);
+    }
+</script>
+
+</body>
+</html>
