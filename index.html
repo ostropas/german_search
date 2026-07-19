@@ -25,6 +25,7 @@
             padding: 30px;
             border-radius: 12px;
             box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+            box-sizing: border-box;
         }
         .search-box {
             display: flex;
@@ -39,6 +40,8 @@
             border-radius: 8px;
             outline: none;
             transition: border-color 0.2s;
+            box-sizing: border-box;
+            width: 100%;
         }
         input[type="text"]:focus {
             border-color: #0071e3;
@@ -52,6 +55,7 @@
             border-radius: 8px;
             cursor: pointer;
             font-weight: 500;
+            white-space: nowrap;
         }
         .main-btn:hover {
             background-color: #0077ed;
@@ -65,11 +69,13 @@
             justify-content: space-between;
             align-items: center;
             border: 1px solid #e5e5ea;
+            gap: 15px;
         }
         .result-text {
             font-size: 20px;
             font-weight: 600;
             letter-spacing: -0.02em;
+            word-break: break-word;
         }
         .type-badge {
             font-size: 12px;
@@ -80,12 +86,13 @@
         .copy-btn {
             background: #34c759;
             color: white;
-            padding: 8px 12px;
+            padding: 10px 16px;
             font-size: 14px;
             border: none;
             border-radius: 6px;
             cursor: pointer;
-            margin-left: 15px;
+            flex-shrink: 0;
+            transition: background-color 0.2s;
         }
         .copy-btn:hover {
             background: #30b852;
@@ -107,7 +114,7 @@
             background-color: #e5e5ea;
             color: #1d1d1f;
             border: none;
-            padding: 6px 12px;
+            padding: 8px 16px;
             border-radius: 16px;
             font-size: 14px;
             cursor: pointer;
@@ -115,6 +122,32 @@
         }
         .suggestion-btn:hover {
             background-color: #d1d1d6;
+        }
+
+        /* --- Адаптивность для мобильных устройств --- */
+        @media (max-width: 480px) {
+            .container {
+                padding: 20px 15px; 
+            }
+            .search-box {
+                flex-direction: column; 
+            }
+            .main-btn {
+                width: 100%; 
+                padding: 14px;
+            }
+            .result-card {
+                flex-direction: column; 
+                align-items: flex-start; 
+            }
+            .copy-btn {
+                width: 100%; 
+                margin-left: 0;
+                padding: 12px;
+            }
+            .result-text {
+                font-size: 18px; 
+            }
         }
     </style>
 </head>
@@ -135,13 +168,12 @@
         if (e.key === 'Enter') searchWord();
     });
 
-    // Добавлен параметр overrideWord для поиска по предложенному слову
     async function searchWord(overrideWord = null) {
         const inputEl = document.getElementById('wordInput');
         const word = overrideWord || inputEl.value.trim();
         
         if (overrideWord) {
-            inputEl.value = overrideWord; // Обновляем строку ввода, если кликнули по подсказке
+            inputEl.value = overrideWord; 
         }
         
         const statusDiv = document.getElementById('status');
@@ -174,7 +206,6 @@
                           .trim();
             };
 
-            // 1. СУЩЕСТВИТЕЛЬНОЕ
             const nounPages = nounData.query.pages;
             const nounPageId = Object.keys(nounPages)[0];
             if (nounPageId !== "-1") {
@@ -199,7 +230,6 @@
                 }
             }
 
-            // 2. ГЛАГОЛ
             const verbPages = verbData.query.pages;
             const verbPageId = Object.keys(verbPages)[0];
             if (verbPageId !== "-1") {
@@ -231,18 +261,15 @@
             return;
         }
 
-        // 3. ПОИСК ПОХОЖИХ СЛОВ (если точное совпадение не найдено)
         if (foundSomething) {
             statusDiv.innerText = "";
         } else {
             statusDiv.innerText = "Точное совпадение не найдено. Ищем варианты...";
             
             try {
-                // Запрос к OpenSearch API Викисловаря (ищет слова, начинающиеся на введенные буквы или похожие)
                 const searchRes = await fetch(`https://de.wiktionary.org/w/api.php?action=opensearch&search=${encodeURIComponent(word)}&limit=6&namespace=0&format=json&origin=*`);
                 const searchData = await searchRes.json();
                 
-                // В ответе OpenSearch массив [0] это сам запрос, а [1] - массив предложенных слов
                 const suggestions = searchData[1];
                 
                 if (suggestions && suggestions.length > 0) {
@@ -252,12 +279,10 @@
                     suggContainer.className = 'suggestions-container';
                     
                     suggestions.forEach(sugg => {
-                        // Отфильтровываем служебные страницы, если они вдруг попали
                         if (!sugg.includes(':')) {
                             const btn = document.createElement('button');
                             btn.className = 'suggestion-btn';
                             btn.innerText = sugg;
-                            // При клике запускаем поиск по этому слову
                             btn.onclick = () => searchWord(sugg);
                             suggContainer.appendChild(btn);
                         }
