@@ -124,6 +124,242 @@
             background-color: #d1d1d6;
         }
 
+        /* --- Вкладки --- */
+        .tabs {
+            display: flex;
+            background: #e5e5ea;
+            border-radius: 10px;
+            padding: 3px;
+            margin-bottom: 24px;
+        }
+        .tab-btn {
+            flex: 1;
+            padding: 9px 12px;
+            font-size: 15px;
+            font-weight: 500;
+            background: transparent;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            color: #1d1d1f;
+            transition: background-color 0.2s, box-shadow 0.2s;
+        }
+        .tab-btn.active {
+            background: #ffffff;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+        }
+        .panel[hidden] { display: none; }
+
+        /* --- Тест: настройки --- */
+        .field-label {
+            font-size: 13px;
+            color: #86868b;
+            margin-bottom: 8px;
+            display: block;
+        }
+        .field {
+            margin-bottom: 20px;
+        }
+        .segmented {
+            display: flex;
+            gap: 8px;
+        }
+        .seg-btn {
+            flex: 1;
+            padding: 12px 0;
+            font-size: 16px;
+            font-weight: 600;
+            background: #f5f5f7;
+            border: 2px solid #e5e5ea;
+            border-radius: 8px;
+            cursor: pointer;
+            color: #1d1d1f;
+            transition: border-color 0.2s, background-color 0.2s;
+        }
+        .seg-btn.active {
+            border-color: #0071e3;
+            background: #eaf3ff;
+            color: #0071e3;
+        }
+        .count-row {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        .count-row .seg-btn {
+            flex: 0 0 auto;
+            padding: 10px 16px;
+            font-size: 15px;
+        }
+        input[type="number"] {
+            width: 90px;
+            padding: 10px 12px;
+            font-size: 16px;
+            border: 2px solid #e5e5ea;
+            border-radius: 8px;
+            outline: none;
+            box-sizing: border-box;
+        }
+        input[type="number"]:focus {
+            border-color: #0071e3;
+        }
+        .hint {
+            font-size: 13px;
+            color: #86868b;
+            margin-top: 6px;
+        }
+        .full-btn {
+            width: 100%;
+            padding: 14px;
+        }
+
+        /* --- Тест: ход --- */
+        .quiz-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 14px;
+            color: #86868b;
+            margin-bottom: 10px;
+        }
+        .link-btn {
+            background: none;
+            border: none;
+            color: #0071e3;
+            font-size: 14px;
+            cursor: pointer;
+            padding: 0;
+        }
+        .progress {
+            height: 6px;
+            background: #e5e5ea;
+            border-radius: 3px;
+            overflow: hidden;
+            margin-bottom: 30px;
+        }
+        .progress-bar {
+            height: 100%;
+            width: 0%;
+            background: #0071e3;
+            transition: width 0.2s;
+        }
+        .quiz-word {
+            font-size: 34px;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+            text-align: center;
+            min-height: 90px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            word-break: break-word;
+            margin-bottom: 30px;
+        }
+        .answer-row {
+            display: flex;
+            gap: 12px;
+        }
+        .answer-btn {
+            flex: 1;
+            padding: 16px;
+            font-size: 17px;
+            font-weight: 600;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: filter 0.15s, transform 0.05s;
+        }
+        .answer-btn:hover { filter: brightness(1.05); }
+        .answer-btn:active { transform: scale(0.98); }
+        .answer-btn.no { background: #ff3b30; }
+        .answer-btn.yes { background: #34c759; }
+        .keys-hint {
+            text-align: center;
+            font-size: 12px;
+            color: #86868b;
+            margin-top: 14px;
+        }
+
+        /* --- Тест: результат --- */
+        .score {
+            text-align: center;
+            margin-bottom: 24px;
+        }
+        .score-percent {
+            font-size: 56px;
+            font-weight: 700;
+            letter-spacing: -0.03em;
+            line-height: 1;
+        }
+        .score-sub {
+            font-size: 15px;
+            color: #86868b;
+            margin-top: 8px;
+        }
+        .score-verdict {
+            font-size: 15px;
+            margin-top: 14px;
+            line-height: 1.5;
+        }
+        .word-list {
+            margin: 0 0 20px;
+            padding: 0;
+            list-style: none;
+        }
+        .word-list li {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+            padding: 10px 12px;
+            background: #f5f5f7;
+            border: 1px solid #e5e5ea;
+            border-radius: 8px;
+            margin-bottom: 6px;
+            font-size: 15px;
+        }
+        .word-list .de {
+            font-weight: 600;
+        }
+        .word-list .ru {
+            color: #86868b;
+            text-align: right;
+        }
+        .word-list .example {
+            color: #86868b;
+            font-size: 13px;
+            font-style: italic;
+            margin-top: 4px;
+        }
+        .word-list .lookup {
+            background: none;
+            border: none;
+            color: #0071e3;
+            cursor: pointer;
+            font-size: 13px;
+            padding: 0;
+            flex-shrink: 0;
+        }
+        .list-title {
+            font-size: 14px;
+            font-weight: 600;
+            margin: 20px 0 10px;
+        }
+        .result-actions {
+            display: flex;
+            gap: 10px;
+        }
+        .result-actions .main-btn { flex: 1; }
+        .secondary-btn {
+            background: #e5e5ea;
+            color: #1d1d1f;
+        }
+        .secondary-btn:hover {
+            background: #d1d1d6;
+        }
+
         /* --- Адаптивность для мобильных устройств --- */
         @media (max-width: 480px) {
             .container {
@@ -148,22 +384,319 @@
             .result-text {
                 font-size: 18px; 
             }
+            .quiz-word {
+                font-size: 28px;
+            }
+            .result-actions {
+                flex-direction: column;
+            }
+            .keys-hint { display: none; }
         }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <div class="search-box">
-        <input type="text" id="wordInput" placeholder="Например: melden или meldung" autofocus>
-        <button class="main-btn" onclick="searchWord()">Найти</button>
+    <div class="tabs">
+        <button class="tab-btn active" data-tab="dict" onclick="switchTab('dict')">Словарь</button>
+        <button class="tab-btn" data-tab="quiz" onclick="switchTab('quiz')">Тест слов</button>
     </div>
 
-    <div id="status" class="status"></div>
-    <div id="results"></div>
+    <!-- ===== Словарь ===== -->
+    <div id="panel-dict" class="panel">
+        <div class="search-box">
+            <input type="text" id="wordInput" placeholder="Например: melden или meldung" autofocus>
+            <button class="main-btn" onclick="searchWord()">Найти</button>
+        </div>
+
+        <div id="status" class="status"></div>
+        <div id="results"></div>
+    </div>
+
+    <!-- ===== Тест ===== -->
+    <div id="panel-quiz" class="panel" hidden>
+
+        <!-- Настройки -->
+        <div id="quiz-setup">
+            <div class="field">
+                <span class="field-label">Уровень</span>
+                <div class="segmented" id="levelPicker">
+                    <button class="seg-btn active" data-level="A1" onclick="setLevel('A1')">A1</button>
+                    <button class="seg-btn" data-level="A2" onclick="setLevel('A2')">A2</button>
+                    <button class="seg-btn" data-level="B1" onclick="setLevel('B1')">B1</button>
+                </div>
+            </div>
+
+            <div class="field">
+                <span class="field-label">Количество слов</span>
+                <div class="count-row" id="countPicker">
+                    <button class="seg-btn" data-count="20" onclick="setCount(20)">20</button>
+                    <button class="seg-btn active" data-count="40" onclick="setCount(40)">40</button>
+                    <button class="seg-btn" data-count="60" onclick="setCount(60)">60</button>
+                    <button class="seg-btn" data-count="100" onclick="setCount(100)">100</button>
+                    <button class="seg-btn" data-count="all" id="allBtn" onclick="setCount(poolSize())">Все</button>
+                    <input type="number" id="countInput" min="5" value="40" oninput="onCountInput()">
+                </div>
+                <div class="hint" id="poolHint"></div>
+            </div>
+
+            <button class="main-btn full-btn" onclick="startQuiz()">Начать тест</button>
+        </div>
+
+        <!-- Ход теста -->
+        <div id="quiz-run" hidden>
+            <div class="quiz-header">
+                <span id="quizProgressText">1 / 40</span>
+                <button class="link-btn" onclick="abortQuiz()">Прервать</button>
+            </div>
+            <div class="progress"><div class="progress-bar" id="quizProgressBar"></div></div>
+
+            <div class="quiz-word" id="quizWord"></div>
+
+            <div class="answer-row">
+                <button class="answer-btn no" onclick="answer(false)">Не знаю</button>
+                <button class="answer-btn yes" onclick="answer(true)">Знаю</button>
+            </div>
+            <div class="keys-hint">Клавиши: ← не знаю · → знаю</div>
+        </div>
+
+        <!-- Результат -->
+        <div id="quiz-result" hidden>
+            <div class="score">
+                <div class="score-percent" id="scorePercent">0%</div>
+                <div class="score-sub" id="scoreSub"></div>
+                <div class="score-verdict" id="scoreVerdict"></div>
+            </div>
+
+            <div id="unknownBlock">
+                <div class="list-title">Незнакомые слова</div>
+                <ul class="word-list" id="unknownList"></ul>
+            </div>
+
+            <div class="result-actions">
+                <button class="main-btn" onclick="startQuiz()">Ещё раз</button>
+                <button class="main-btn secondary-btn" onclick="showSetup()">Настройки</button>
+            </div>
+        </div>
+    </div>
 </div>
 
+<script src="words.js"></script>
 <script>
+    /* ===================== Вкладки ===================== */
+    function switchTab(name) {
+        document.querySelectorAll('.tab-btn').forEach(b => b.classList.toggle('active', b.dataset.tab === name));
+        document.getElementById('panel-dict').hidden = name !== 'dict';
+        document.getElementById('panel-quiz').hidden = name !== 'quiz';
+        if (name === 'dict') document.getElementById('wordInput').focus();
+        try { localStorage.setItem('tab', name); } catch (e) {}
+    }
+
+    /* ===================== Тест слов ===================== */
+    const quiz = {
+        level: 'A1',
+        count: 40,
+        words: [],
+        index: 0,
+        known: [],
+        unknown: [],
+        running: false
+    };
+
+    function poolSize() {
+        return (WORD_LISTS[quiz.level] || []).length;
+    }
+
+    function setLevel(level) {
+        quiz.level = level;
+        document.querySelectorAll('#levelPicker .seg-btn').forEach(b => b.classList.toggle('active', b.dataset.level === level));
+        clampCount();
+        updateHint();
+        saveSettings();
+    }
+
+    function setCount(n) {
+        quiz.count = n;
+        document.getElementById('countInput').value = n;
+        clampCount();
+        highlightCount();
+        updateHint();
+        saveSettings();
+    }
+
+    function onCountInput() {
+        const v = parseInt(document.getElementById('countInput').value, 10);
+        if (!isNaN(v)) quiz.count = v;
+        highlightCount();
+        updateHint();
+        saveSettings();
+    }
+
+    function clampCount() {
+        const max = poolSize();
+        const input = document.getElementById('countInput');
+        input.max = max;
+        if (quiz.count > max) quiz.count = max;
+        if (quiz.count < 5) quiz.count = 5;
+        input.value = quiz.count;
+        highlightCount();
+    }
+
+    function highlightCount() {
+        document.querySelectorAll('#countPicker .seg-btn').forEach(b => {
+            const v = b.dataset.count === 'all' ? poolSize() : parseInt(b.dataset.count, 10);
+            b.classList.toggle('active', v === quiz.count);
+        });
+    }
+
+    function updateHint() {
+        const note = quiz.level === 'A1' ? '' : quiz.level === 'A2' ? ' (только новые слова относительно A1)' : ' (только новые слова относительно A1 и A2)';
+        document.getElementById('poolHint').innerText = `Слов уровня ${quiz.level}: ${poolSize()}${note}. Слова выбираются случайно.`;
+    }
+
+    function saveSettings() {
+        try { localStorage.setItem('quizSettings', JSON.stringify({ level: quiz.level, count: quiz.count })); } catch (e) {}
+    }
+
+    function loadSettings() {
+        try {
+            const s = JSON.parse(localStorage.getItem('quizSettings'));
+            if (s && WORD_LISTS[s.level]) quiz.level = s.level;
+            if (s && Number.isInteger(s.count)) quiz.count = s.count;
+        } catch (e) {}
+        document.querySelectorAll('#levelPicker .seg-btn').forEach(b => b.classList.toggle('active', b.dataset.level === quiz.level));
+        document.getElementById('countInput').value = quiz.count;
+        clampCount();
+        updateHint();
+    }
+
+    function shuffle(arr) {
+        const a = arr.slice();
+        for (let i = a.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [a[i], a[j]] = [a[j], a[i]];
+        }
+        return a;
+    }
+
+    function showOnly(id) {
+        ['quiz-setup', 'quiz-run', 'quiz-result'].forEach(x => document.getElementById(x).hidden = x !== id);
+    }
+
+    function showSetup() {
+        quiz.running = false;
+        showOnly('quiz-setup');
+    }
+
+    function startQuiz() {
+        clampCount();
+        quiz.words = shuffle(WORD_LISTS[quiz.level]).slice(0, quiz.count);
+        quiz.index = 0;
+        quiz.known = [];
+        quiz.unknown = [];
+        quiz.running = true;
+        showOnly('quiz-run');
+        renderQuestion();
+    }
+
+    function abortQuiz() {
+        showSetup();
+    }
+
+    function renderQuestion() {
+        const total = quiz.words.length;
+        document.getElementById('quizProgressText').innerText = `${quiz.index + 1} / ${total}`;
+        document.getElementById('quizProgressBar').style.width = `${(quiz.index / total) * 100}%`;
+        document.getElementById('quizWord').innerText = quiz.words[quiz.index][0];
+    }
+
+    function answer(isKnown) {
+        if (!quiz.running) return;
+        const item = quiz.words[quiz.index];
+        (isKnown ? quiz.known : quiz.unknown).push(item);
+        quiz.index++;
+        if (quiz.index >= quiz.words.length) {
+            finishQuiz();
+        } else {
+            renderQuestion();
+        }
+    }
+
+    function verdict(pct, level) {
+        if (pct >= 90) return `Отлично! Лексика уровня ${level} у вас практически полностью освоена — можно переходить к следующему уровню.`;
+        if (pct >= 75) return `Хороший результат. Основа уровня ${level} есть, осталось закрыть пробелы из списка ниже.`;
+        if (pct >= 50) return `Уровень ${level} освоен примерно наполовину. Стоит целенаправленно поработать над словарём этого уровня.`;
+        return `Большая часть слов уровня ${level} пока незнакома. Рекомендуется начать с этого уровня или уровня ниже.`;
+    }
+
+    function finishQuiz() {
+        quiz.running = false;
+        const total = quiz.words.length;
+        const knownCount = quiz.known.length;
+        const pct = Math.round((knownCount / total) * 100);
+
+        const pctEl = document.getElementById('scorePercent');
+        pctEl.innerText = `${pct}%`;
+        pctEl.style.color = pct >= 75 ? '#34c759' : pct >= 50 ? '#ff9500' : '#ff3b30';
+
+        document.getElementById('scoreSub').innerText = `Знаю ${knownCount} из ${total} слов · уровень ${quiz.level}`;
+        document.getElementById('scoreVerdict').innerText = verdict(pct, quiz.level);
+
+        const list = document.getElementById('unknownList');
+        list.innerHTML = '';
+        document.getElementById('unknownBlock').hidden = quiz.unknown.length === 0;
+
+        quiz.unknown.forEach(([de, ru, example]) => {
+            const li = document.createElement('li');
+
+            const left = document.createElement('div');
+            const deSpan = document.createElement('div');
+            deSpan.className = 'de';
+            deSpan.innerText = de;
+            const ruSpan = document.createElement('div');
+            ruSpan.className = 'ru';
+            ruSpan.style.textAlign = 'left';
+            ruSpan.innerText = ru;
+            left.appendChild(deSpan);
+            left.appendChild(ruSpan);
+            if (example) {
+                const exSpan = document.createElement('div');
+                exSpan.className = 'example';
+                exSpan.innerText = example;
+                left.appendChild(exSpan);
+            }
+
+            const btn = document.createElement('button');
+            btn.className = 'lookup';
+            btn.innerText = 'В словаре';
+            btn.onclick = () => {
+                // Убираем артикль / "sich" для поиска в словаре
+                const base = de.replace(/^(der\/die|der|die|das|sich|ein|zum|im)\s+/, '').split(/\s|…/)[0];
+                switchTab('dict');
+                searchWord(base);
+            };
+
+            li.appendChild(left);
+            li.appendChild(btn);
+            list.appendChild(li);
+        });
+
+        showOnly('quiz-result');
+    }
+
+    document.addEventListener('keydown', function(e) {
+        if (!quiz.running || document.getElementById('panel-quiz').hidden) return;
+        if (e.key === 'ArrowRight') { e.preventDefault(); answer(true); }
+        if (e.key === 'ArrowLeft') { e.preventDefault(); answer(false); }
+    });
+
+    loadSettings();
+    try {
+        const savedTab = localStorage.getItem('tab');
+        if (savedTab === 'quiz') switchTab('quiz');
+    } catch (e) {}
+
+    /* ===================== Словарь ===================== */
     document.getElementById('wordInput').addEventListener('keypress', function(e) {
         if (e.key === 'Enter') searchWord();
     });
